@@ -15,11 +15,9 @@ jobs:
 
       - name: Create Slack Channel
         run: |
-          SLACK_TOKEN=$SLACK_TOKEN
-          CHANNEL_NAME=my-new-channel
-          curl -X POST -H "Authorization: Bearer $SLACK_TOKEN" -H "Content-type: application/json" \
-            --data '{"name":"'"$CHANNEL_NAME"'"}' \
+          curl -X POST -H "Authorization: Bearer ${{env.SLACK_TOKEN}}" -H "Content-type: application/json" \
+            --data '{"name":"${{env.CHANNEL_NAME}}' \
             https://slack.com/api/conversations.create
         env:
-          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-
+          SLACK_TOKEN: ${{ secrets.SLACK_AUTH_TOKEN }}
+          CHANNEL_NAME:${{ vars.NEW_CHANNEL }}
