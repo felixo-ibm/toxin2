@@ -1,23 +1,48 @@
-name: update Monday.com status
+name: Create Monday.com Board
+env:
+  MONDAY_TOKEN: ${{ secrets.MONDAY_API_KEY }}
 on:
-  pull_request:
-    types:
-      [opened, closed]
+  push:
     branches:
-      - master
+      - main
+
 jobs:
-  update_monday_status:
+  create_board_and_card:
     runs-on: ubuntu-latest
-    name: Update Monday Status
+
     steps:
-    - name: Call Monday.com API
-      uses: willstenzel/update-monday-status-action@v1.0
-      with:
-        API_TOKEN: ${{ secrets.API_TOKEN }}
-        BOARD_ID: 
-        COLUMN_ID: "status"
-        submitted-status: "PR Submitted"
-        merged-status: "Done"
-        pull-request-body: ${{ github.event.pull_request.body }}
-        merged: ${{ github.event.pull_request.merged }}
-      if: contains(github.event.pull_request.body, 'pulses')
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create Monday.com Board
+      run: |
+        BOARD_NAME="New Board"
+
+        # Create a new board
+        board_id=$(curl -s --request POST \
+          --url 'https://api.monday.com/v2/boards' \
+          -H "Content-Type: application/json" \
+          -H "Authorization: ${{env.MONDAY_TOKEN}}" \
+          --data-raw '{
+            "name": "",
+            "board_kind": "public"
+          }') 
+
+        echo "Created board with ID: $board_id"
+
+    - name: Create Monday.com Card
+      run: |
+        MONDAY_API_KEY=${{env.MONDAY_TOKEN}}
+        BOARD_ID=<REPLACE_WITH_BOARD_ID>
+        ITEM_NAME="New Card"
+
+        # Create a new card
+        curl --request POST \
+          --url 'https://api.monday.com/v2/items' \
+          --header "Content-Type: application/json" \
+          --header "Authorization: ${{env.MONDAY_TOKEN}}" \
+          --data-raw '{
+            "board_id": '"$BOARD_ID"',
+            "name": "'"$ITEM_NAME"'"
+          }'
+
