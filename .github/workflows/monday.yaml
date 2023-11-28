@@ -1,6 +1,6 @@
 name: Create Monday.com Board
-env:
-  MONDAY_TOKEN: ${{ secrets.MONDAY_API_KEY }}
+#env:
+ # MONDAY_TOKEN: ${{ secrets.MONDAY_API_KEY }}
 
 on:
   push:
