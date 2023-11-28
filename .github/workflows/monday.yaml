@@ -1,22 +1,21 @@
 name: Create Monday.com Board
 env:
   MONDAY_TOKEN: ${{ secrets.MONDAY_API_KEY }}
+
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  create_board_and_card:
+  create board:
+
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2 
 
-    - name: Create Monday.com Board
-      run: | 
-          BOARD_NAME="New Board"
+    - name: Create Board
+      run: |
         # Create a new board
         curl --location 'https://api.monday.com/v2/' \
           --header "Content-Type: application/json" \
